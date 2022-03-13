@@ -1,3 +1,4 @@
+#import <Firebase.h>
 #import "AppDelegate.h"
 
 #import <React/RCTBridge.h>
@@ -24,9 +25,12 @@ static void InitializeFlipper(UIApplication *application) {
 #endif
 
 @implementation AppDelegate
+- (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions {
+  if ([FIRApp defaultApp] == nil) {
+    [FIRApp configure];
+  }
+// … the rest of the function body remains the same
 
-- (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions
-{
 #ifdef FB_SONARKIT_ENABLED
   InitializeFlipper(application);
 #endif
