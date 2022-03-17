@@ -1,30 +1,35 @@
 import React from 'react';
-import {View, Text, StyleSheet} from 'react-native';
-import ItemComponent from './ItemComponent';
-
-import database from '@react-native-firebase/database';
-
-let itemsRef = database().ref('/items');
+import {getAllDocumentsWithPath} from './api/firestore/DocumentRetriever';
+import {FlatList, View, StyleSheet} from 'react-native';
 
 export default function List() {
   const [itemsArray, setItemsArray] = React.useState([]);
 
   React.useEffect(() => {
-    itemsRef.on('value', snapshot => {
-      let data = snapshot.val();
-      console.log(data);
-      const items = Object.values(data);
-      setItemsArray(items);
-      console.log(items);
-    });
+    console.log(getAllDocumentsWithPath('items'));
+    setItemsArray(itemsArray);
+    console.log(itemsArray);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
+
+  const renderItem = ({item}) => {
+    console.log(item);
+    return (
+      <>
+        <View>{item.description}</View>
+        <View style={styles.font}>{item.name}</View>
+      </>
+    );
+  };
 
   return (
     <View style={styles.container}>
-      {itemsArray.length > 0 ? (
-        <ItemComponent items={itemsArray} />
-      ) : (
-        <Text>No items</Text>
+      {itemsArray && (
+        <FlatList
+          itemsArray={itemsArray}
+          renderItem={renderItem}
+          keyExtractor={item => item.id.toString()}
+        />
       )}
     </View>
   );
@@ -36,4 +41,10 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     backgroundColor: '#ebebeb',
   },
+  font: {
+    justifyContent: 'center',
+    fontSize: 111,
+    color: 'red',
+
+  }
 });
